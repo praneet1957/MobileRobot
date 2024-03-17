@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="slam_bot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:property name="bot_length"       value="1.0"/>
+<xacro:property name="bot_width"        value="0.5"/>
+<xacro:property name="bot_height"       value="0.25"/>
+<xacro:property name="lidar_mount_side" value="0.125"/>
+<xacro:property name="lidar"            value="0.1"/>
+<xacro:property name="camera"           value="0.1"/>
+<xacro:property name="wheel_radius"     value="0.1"/>
+<xacro:property name="wheel_width"      value="0.034"/>
+<xacro:property name="mass_wheel"		value="0.04" />
+<xacro:property name="mass_bot"			value="0.2" />
+
+
+<!-- Need to add controller  -->
+
+<link name="slam_body_base">
+<inertial>
+	<origin xyz ="0 0 ${wheel_radius+bot_height/2}" rpy="0 0 0"/>
+	<mass value = "${mass_bot}" />
+	<inertia 
+		ixx="${mass_bot*(bot_width*bot_width+bot_height*bot_height)/12}"  ixy = "0" ixz="0"
+		iyy="${mass_bot*(bot_length*bot_length+bot_height*bot_height)/12}" iyz ="0"
+		izz="${mass_bot*(bot_length*bot_length+bot_width*bot_width)/12}" />
+</inertial>
+
+<visual>
+	<origin xyz ="0 0 ${wheel_radius+bot_height/2}" rpy="0 0 0"/>
+	<geometry>
+		<box size="${bot_length} ${bot_width} ${bot_height}" />
+	</geometry>
+	<material name="">
+		<color rgba="0 0 0 0"/>
+	</material>
+</visual>
+
+
+<collision>
+	<origin xyz="0 0 ${wheel_radius+bot_height/2}" rpy="0 0 0"/>
+	<geometry>
+		<box size="${bot_length} ${bot_width} ${bot_height}" />
+	</geometry>
+</collision>
+</link>
+
+
+
+<joint name="Wheel_Front_Right_mount" type="continuous">
+	<origin xyz="${bot_width/2} ${bot_length/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Front_Right" />
+	<axis xyz="0 1 0" rpy="0 0 0"/>
+</joint>
+
+
+
+
+
+<link name="Wheel_Front_Right">
+
+<inertial>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.1 0.1 0.2 0.5"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry>
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+</collision>
+
+</link>
+
+
+
+
+<joint name="Wheel_Front_Left_mount" type="continuous">
+	<origin xyz="${-bot_width/2} ${bot_length/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Front_Left" />
+	<axis xyz="0 -1 0" rpy="0 0 0"/>
+</joint>
+
+
+
+
+<link name="Wheel_Front_Left">
+
+<inertial>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.1 0.1 0.2 0.5"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry >
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+</collision>
+
+</link>
+
+
+
+
+<joint name="Wheel_Rear_Right_mount" type="continuous">
+	<origin xyz="${bot_width/2} ${-bot_length/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Rear_Right" />
+	<axis xyz="0 1 0" rpy="0 0 0"/>
+</joint>
+
+
+
+
+<link name="Wheel_Rear_Right">
+
+<inertial>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.1 0.1 0.2 0.5"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+</collision>
+
+</link>
+
+
+
+<joint name="Wheel_Rear_Left_mount" type="continuous">
+	<origin xyz="${-bot_width/2} ${-bot_length/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Rear_Left" />
+	<axis xyz="0 -1 0" rpy="0 0 0"/>
+</joint>
+
+
+
+
+<link name="Wheel_Rear_Left">
+
+<inertial>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.1 0.1 0.2 0.5"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry>
+		<cylinder radius="${wheel_radius}" length="${wheel_radius}" />
+	</geometry>
+</collision>
+
+</link>
+
+
+
+
+
+
+</robot>

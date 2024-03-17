@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<sdf version="1.5">
+	<world name="Env1">
+
+		<include>
+			<uri>model://ground_plane</uri>
+		</include>
+
+		<include>
+			<uri>model://sun</uri>
+		</include>
+
+<!-- 		<include>
+			<uri>model://slam_bot</uri>
+			<name>slam_bot</name>
+			<pose>0 0 0 0 0 0 </pose>
+		</include> -->
+
+		<gui fullscreen="0">
+			<camera name="world_camera">
+				<pose>0 0 0 0 0 0 </pose>
+				<view_controller>orbit</view_controller>
+			</camera>
+		</gui>
+		
+	</world>
+</sdf>

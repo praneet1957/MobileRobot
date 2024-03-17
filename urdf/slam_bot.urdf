@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="slam_bot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:property name="bot_length"       value="1.0"/>
+<xacro:property name="bot_width"        value="0.5"/>
+<xacro:property name="bot_height"       value="0.25"/>
+<xacro:property name="lidar_mount_side" value="0.125"/>
+<xacro:property name="lidar"            value="0.1"/>
+<xacro:property name="camera"           value="0.1"/>
+<xacro:property name="wheel_radius"     value="0.1"/>
+<xacro:property name="wheel_width"      value="0.075"/>
+<xacro:property name="mass_wheel"		value="0.5" />
+<xacro:property name="mass_bot"			value="1.0" />
+<xacro:property name="pi"               value="3.14159" />
+<xacro:property name="camera_link"      value="0.1"/>
+<xacro:property name="lidar_link"       value="0.1" />
+<xacro:property name="imu_link"         value="0.01" />
+
+
+
+<gazebo reference="slam_body_base">
+  <material>Gazebo/Blue</material>
+</gazebo>
+
+<gazebo reference="Wheel_Rear_Left">
+  <material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="Wheel_Rear_Right">
+  <material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="Wheel_Front_Left">
+  <material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="Wheel_Front_Right">
+  <material>Gazebo/Black</material>
+</gazebo>
+
+<gazebo reference="camera">
+  <material>Gazebo/Purple</material>
+</gazebo>
+
+<gazebo reference="lidar">
+  <material>Gazebo/Green</material>
+</gazebo>
+
+<!-- Need to add controller  -->
+
+<!-- actual bot -->
+
+<link name="slam_body_base">
+<inertial>
+	<origin xyz ="0 0 0" rpy="0 0 0"/>
+	<mass value = "${mass_bot}" />
+	<inertia 
+		ixx="${mass_bot*(bot_width*bot_width+bot_height*bot_height)/12}"  ixy = "0" ixz="0"
+		iyy="${mass_bot*(bot_length*bot_length+bot_height*bot_height)/12}" iyz ="0"
+		izz="${mass_bot*(bot_length*bot_length+bot_width*bot_width)/12}" />
+</inertial>
+
+<visual>
+	<origin xyz ="0 0 0" rpy="0 0 0"/>
+	<geometry>
+		<box size="${bot_length} ${bot_width} ${bot_height}" />
+	</geometry>
+	<material name="">
+		<color rgba="0 0 1 1"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry>
+		<box size="${bot_length} ${bot_width} ${bot_height}" />
+	</geometry>
+</collision>
+</link>
+
+
+
+<joint name="Wheel_Front_Left_mount" type="continuous">
+	<origin xyz="${bot_length/3} ${bot_width/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Front_Left" />
+	<axis xyz="0 1 0" rpy="0 0 0"/>
+</joint>
+
+<transmission name="front_left_transmission">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="Wheel_Front_Left_mount">
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="Motor_Front_Left">
+    <mechanicalReduction>50</mechanicalReduction>
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </actuator>
+</transmission>
+
+
+
+<link name="Wheel_Front_Left">
+
+<inertial>
+	<origin xyz="0 ${wheel_width/2} 0" rpy="${pi/2} 0 0"/> 
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 ${wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.0 0.0 0.0 1"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 ${wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry>
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+</collision>
+
+</link>
+
+
+<joint name="Wheel_Rear_Left_mount" type="continuous">
+	<origin xyz="${-bot_length/3} ${bot_width/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Rear_Left" />
+	<axis xyz="0 -1 0" rpy="0 0 0"/>
+</joint>
+
+<transmission name="rear_left_transmission">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="Wheel_Rear_Left_mount">
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="Motor_Rear_Left">
+    <mechanicalReduction>50</mechanicalReduction>
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </actuator>
+</transmission>
+
+
+<link name="Wheel_Rear_Left">
+
+<inertial>
+	<origin xyz="0 ${wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 ${wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.0 0.0 0.0 1"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 ${wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry >
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+</collision>
+
+</link>
+
+
+
+
+<joint name="Wheel_Rear_Right_mount" type="continuous">
+	<origin xyz="${-bot_length/3} ${-bot_width/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Rear_Right" />
+	<axis xyz="0 1 0" rpy="0 0 0"/>
+</joint>
+
+<transmission name="rear_right_transmission">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="Wheel_Rear_Right_mount">
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="Motor_Rear_Right">
+    <mechanicalReduction>50</mechanicalReduction>
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </actuator>
+</transmission>
+
+
+<link name="Wheel_Rear_Right">
+
+<inertial>
+	<origin xyz="0 ${-wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 ${-wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.0 0.0 0.0 1.0"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 ${-wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+</collision>
+
+</link>
+
+
+
+<joint name="Wheel_Front_Right_mount" type="continuous">
+	<origin xyz="${bot_length/3} ${-bot_width/2} ${-bot_height/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="Wheel_Front_Right" />
+	<axis xyz="0 -1 0" rpy="0 0 0"/>
+</joint>
+
+<transmission name="front_right_transmission">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="Wheel_Front_Right_mount">
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="Motor_Front_Right">
+    <mechanicalReduction>50</mechanicalReduction>
+    <hardwareInterface>EffortJointInterface</hardwareInterface>
+  </actuator>
+</transmission>
+
+
+<link name="Wheel_Front_Right">
+
+<inertial>
+	<origin xyz="0 ${-wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<mass value="${mass_wheel}"/>
+	<inertia
+		ixx = "${mass_wheel*wheel_radius*wheel_radius/4}"  ixy ="0" ixz="0"
+		iyy = "${mass_wheel*wheel_radius*wheel_radius/4}" iyz="0"
+		izz = "${mass_wheel*wheel_radius*wheel_radius/2}" />
+</inertial>
+
+<visual>
+	<origin xyz="0 ${-wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry> 
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+	<material name="">
+		<color rgba="0.0 0.0 0.0 1"/>
+	</material>
+</visual>
+
+<collision>
+	<origin xyz="0 ${-wheel_width/2} 0" rpy="${pi/2} 0 0"/>
+	<geometry>
+		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+	</geometry>
+</collision>
+
+</link>
+ 
+
+<joint name="camera_mount" type="fixed">
+	<origin xyz="${bot_length/3} ${-bot_width/3} ${bot_height/2 + camera_link/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base"/>
+	<child link="camera"/>
+	<axis xyz="0 0 0" rpy="0 0 0"/>
+</joint>
+
+<link name="camera">
+	<inertial>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<mass value="0.02" />
+		<inertia
+			ixx="0.001"  ixy = "0" ixz="0"
+			iyy="0.001" iyz ="0"
+			izz="0.001" />
+	</inertial>
+
+	<visual>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry> 
+			<box size="${camera_link} ${camera_link} ${camera_link}" />
+		</geometry>
+		<material name="">
+		<color rgba="1.0 0.0 0.0 1"/>
+		</material>
+	</visual>
+
+	<collision>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry> 
+			<box size="${camera_link} ${camera_link} ${camera_link}" />
+		</geometry>
+
+	</collision>
+</link>
+
+
+
+<joint name="lidar_mount" type="fixed">
+	<origin xyz="${bot_length/3} ${+bot_width/3} ${bot_height/2 + lidar_link/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base"/>
+	<child link="lidar"/>
+	<axis xyz="0 0 0" rpy="0 0 0"/>
+</joint>
+
+
+
+<link name="lidar">
+	<inertial>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<mass value="0.02" />
+		<inertia
+			ixx="0.001"  ixy = "0" ixz="0"
+			iyy="0.001" iyz ="0"
+			izz="0.001" />
+	</inertial>
+
+	<visual>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry> 
+			<box size="${lidar_link} ${lidar_link} ${lidar_link}" />
+		</geometry>
+		<material name="">
+		<color rgba="0.0 1.0 0.0 1"/>
+		</material>
+	</visual>
+
+	<collision>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry> 
+			<box size="${lidar_link} ${lidar_link} ${lidar_link}" />
+		</geometry>
+
+	</collision>
+</link>
+
+
+<joint name="imu_mount" type="fixed">
+	<origin xyz ="0 0 ${bot_height/2 + lidar_link/2}" rpy="0 0 0"/>
+	<parent link="slam_body_base" />
+	<child link="imu_sense" />
+	<axis xyz="0 0 0" rpy="0 0 0" />
+</joint>
+
+
+<link name="imu_sense">
+	<inertial>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<mass value="0.01" />
+		<inertia
+			ixx="0.0001"  ixy = "0" ixz="0"
+			iyy="0.0001" iyz ="0"
+			izz="0.0001" />
+	</inertial>
+
+	<visual>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry> 
+			<box size="${imu_link} ${imu_link} ${imu_link}" />
+		</geometry>
+		<material name="">
+		<color rgba="0.0 1.0 1.0 1"/>
+		</material>
+	</visual>
+
+	<collision>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry> 
+			<box size="${imu_link} ${imu_link} ${imu_link}" />
+		</geometry>
+
+	</collision>
+</link>
+
+
+<!-- including camera file -->
+<xacro:include filename="sensacc.gazebo"/>
+
+</robot>
