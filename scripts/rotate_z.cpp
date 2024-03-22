@@ -5,10 +5,10 @@
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "control");
-	ros::NodeHandle control_node;
+	ros::init(argc, argv, "rotate_z");
+	ros::NodeHandle rotate_z_node;
 
-	ros::Publisher cmd_pub = control_node.advertise<geometry_msgs::Twist>("/cmd_vel",1000);
+	ros::Publisher cmd_pub = rotate_z_node.advertise<geometry_msgs::Twist>("/cmd_vel",1000);
 	ros::Rate loop_rate(10);
 
 	int count = 0;
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 
 		 geometry_msgs::Twist vel;
 		 	
-		 vel.linear.x = 0.1;
+		 vel.angular.z = 0.1;
 
 		 cmd_pub.publish(vel);
 		 ros::spinOnce();

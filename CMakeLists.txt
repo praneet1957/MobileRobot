@@ -139,7 +139,9 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/slam_node.cpp)
 
-add_executable(control scripts/control.cpp)
+add_executable(rotate_z scripts/rotate_z.cpp)
+add_executable(control_keyboard scripts/control_keyboard.cpp)
+add_executable(Start_Slam scripts/Start_Slam.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -156,7 +158,11 @@ add_executable(control scripts/control.cpp)
 #   ${catkin_LIBRARIES}
 # )
 
-target_link_libraries(control ${catkin_LIBRARIES})
+target_link_libraries(rotate_z ${catkin_LIBRARIES})
+target_link_libraries(control_keyboard ${catkin_LIBRARIES})
+target_link_libraries(Start_Slam ${catkin_LIBRARIES})
+
+
 
 ###########
 # Install #

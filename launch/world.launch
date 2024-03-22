@@ -10,7 +10,7 @@
 	<arg name="yaw"   default="0"/>
 
 	<!--World_file -->
-	<arg name="world_file" default="$(find slam)/world/Env1.world" />
+	<arg name="world_file" default="$(find slam)/world/turtlebot3_stage_2.world" />
 
 	<!--Robot description-->
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(find slam)/urdf/slam_bot.urdf"/>
@@ -44,8 +44,8 @@
   	</node>
 
     <!-- Launch rviz -->
-	<!-- <node name="rviz" pkg="rviz" type="rviz" respawn="false"
-    	args="$(find slam)/rviz/default.rviz" />  -->
-
+<!-- 	<node name="rviz" pkg="rviz" type="rviz" respawn="false"
+    	args="$(find slam)/rviz/default.rviz" /> 
+ -->
 
 </launch>
