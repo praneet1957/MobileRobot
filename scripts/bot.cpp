@@ -9,13 +9,18 @@ class Bot{
 	    float camera_frame;
 	    float imu_reading;
 
+	    float map;
+	    float pose;
+
+	Private:
+		float L;
     
 	}
 
 
 	float Bot::encoder_reading(){
 
-
+           
 
 
 	}
@@ -38,7 +43,7 @@ class Bot{
 
 	float Bot::imu_reading(){
 
-
+          
 
 		
 	}

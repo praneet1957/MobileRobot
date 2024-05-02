@@ -1,6 +1,8 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <iostream>
+#include "lidar_model.h"
+#include "camera.h"
 
 using namespace std
 
@@ -8,6 +10,7 @@ class Algorithm{
 	Public:
 		float motion_model;
         float sensor_model;
+        float T;
 
 
 	Private:
@@ -15,48 +18,45 @@ class Algorithm{
 		float camera_model;
 		float imu_model;
 		float encoder_model;
+}
+
+
+
+// state space will be X = [x,y,theta ]
+
+float Algorithm::motion_model(Bot &bot){
+	bot.x = bot.x + command_v*T*cos(bot.theta);
+	bot.y = bot.y + command_v*T*sin(bot.theta);
+	bot.theta = bot.theta + command_v*T*tan(bot.command_steer)/bot.L;
     
-
-}
-
-
-float Algorithm::motion_model(){
-
-
-
-
+    return bot;
+// Need to add noise
 
 }
 
 
 
-float Algorithm::sensor_model(){
-
-
-
-
-
-}
-
-
-
-float Algorithm::lidar_model(){
-
-
-
-
-
-
+float Algorithm::sensor_model(Bot &bot){
+	this-> camera_model(&bot);
+	this-> imu_model(&bot);
+	this-> encoder_model(&bot);
 
 }
 
 
 
 
-float Algorithm::camera_model(){
+float Algorithm::camera_model(Bot &bot){
+
+    frame_feature_points = bot.camera_frame();
+    
+}
 
 
 
+
+float Algorithm::imu_model(Bot &bot){
+    imu_pose = bot.imu_reading();
 
 
 
@@ -64,22 +64,4 @@ float Algorithm::camera_model(){
 
 
 
-
-float Algorithm::imu_model(){
-
-
-
-
-}
-
-
-
-
-float Algorithm::encoder_model(){
-
-
-
-
-
-}
 
