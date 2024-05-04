@@ -11,6 +11,7 @@ class ExtendedKalmanFilter:private Algorithm{
 		matrix P_bar(2*NumFeautrePoints+3,2*NumFeautrePoints+3,[0]);
 		matrix H_bar(2*NumFeautrePoints+3,2*NumFeautrePoints+3,[0]);
 		matrix F(3,2*NumFeautrePoints+3,[0]);
+		matrix H();
 		matrix K();
 		
 
@@ -43,17 +44,18 @@ class ExtendedKalmanFilter:private Algorithm{
 
 	float KalmanUpdate(Bot &bot){
 		H_bar = (F.Transpose()*Jacob_sensor)*F;
-		K     = (this->P_bar*H_bar)*(H_bar*this->P_bar*H_bar.Transpose() + Q).inv();
+		K     = (this->P_bar*H_bar)*((H_bar*this->P_bar)*H_bar.Transpose() + Q).inv();
 		return 0;
 	}
 
 
 	float MotionUpdate(Bot &bot){
-		sensormodel(bot);
-        X = X + K*(z- H*x);
-        P = (eye(2*NumFeautrePoints+3) - K*H)*P_bar;
+		matrix z = bot.observables();
+		matrix h = EKF.sensormodel(bot);
+		H = EKF.jacob_sensor_model(bot);
+        X = X + K*(z - h);
+        P = (eye(2*NumFeautrePoints+3) - (K*H))*P_bar;
         return 0;
-
 	}
 
 
@@ -62,18 +64,6 @@ class ExtendedKalmanFilter:private Algorithm{
 
 
 	}
-
-
-
-
-	
-
-
-
-
-
-
-
 
 
 

@@ -50,7 +50,7 @@ public:
 
 		for(int i=0;i<Rows;i++){
 				for(int j=0;j<Columns;j++){
-	               res.mat[i][j] = mat[i][j] + M[i][j];
+	               res.mat[i][j] = mat[i][j] + M.mat[i][j];
 				}
 			}
 
@@ -70,7 +70,7 @@ public:
 
 		for(int i=0;i<Rows;i++){
 				for(int j=0;j<Columns;j++){
-	               res.mat[i][j] = mat[i][j] + M[i][j];
+	               res.mat[i][j] = mat[i][j] + M.mat[i][j];
 				}
 			} 
 
@@ -91,7 +91,7 @@ public:
 		for(int i=0;i<Rows;i++){
 				for(int j=0;j<Columns;j++){
 	               for(int k=0;k<Columns;k++){
-	               		res.mat[i][j] = res.mat[i][j] + mat[i][k]*M[k][j];
+	               		res.mat[i][j] = res.mat[i][j] + mat[i][k]*M.mat[k][j];
 	               }
 				}
 			}

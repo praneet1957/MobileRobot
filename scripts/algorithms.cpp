@@ -8,16 +8,18 @@ using namespace std
 
 class Algorithm{
 	Public:
-		float motion_model;
-        float sensor_model;
+		float motion_model();
+        float sensor_model();
+		float jacob_motion_model();
+		float jacob_sensor_model();
         float T;
 
 
 	Private:
-		float lidar_model;
-		float camera_model;
-		float imu_model;
-		float encoder_model;
+		float lidar_model();
+		float camera_model();
+		float imu_model();
+		float encoder_model();
 }
 
 
@@ -37,9 +39,14 @@ float Algorithm::motion_model(Bot &bot){
 
 
 float Algorithm::sensor_model(Bot &bot){
-	this-> camera_model(&bot);
-	this-> imu_model(&bot);
-	this-> encoder_model(&bot);
+	float Xc,Xi,Xe,Xl;
+	Xc = this-> camera_model(&bot);
+	Xi =this-> imu_model(&bot);
+	Xe = this-> encoder_model(&bot);
+	Xl = this-> lidar_model(&bot);
+
+	//should output the observation variables either h(x)
+	return h_x;
 
 }
 
@@ -47,7 +54,6 @@ float Algorithm::sensor_model(Bot &bot){
 
 
 float Algorithm::camera_model(Bot &bot){
-
     frame_feature_points = bot.camera_frame();
     
 }
@@ -62,6 +68,23 @@ float Algorithm::imu_model(Bot &bot){
 
 }
 
+float Algorithm::lidar_model(Bot &bot){
+   
 
+
+
+}
+
+
+float Algorithm::jacob_motion_model(Bot &bot){
+// need to hardcode the jacob model y = C_x
+
+}
+
+
+float Algorithm::jacob_sensor_model(Bot &bot){
+// need to hardcode the sensor model
+
+}
 
 

@@ -48,6 +48,12 @@ class Bot{
 		
 	}
 
+	float Bot::observables(){
+		// convert all observables and send them to algorithms basically z 
+
+
+	}
+
 
     
 
