@@ -1,8 +1,10 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <iostream>
+#include <vector>
 #include "lidar_model.h"
 #include "camera.h"
+#include <map>
 
 using namespace std
 
