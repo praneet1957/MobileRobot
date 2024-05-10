@@ -29,9 +29,9 @@ class Algorithm{
 // state space will be X = [x,y,theta ]
 
 float Algorithm::motion_model(Bot &bot){
-	bot.x = bot.x + command_v*T*cos(bot.theta);
-	bot.y = bot.y + command_v*T*sin(bot.theta);
-	bot.theta = bot.theta + command_v*T*tan(bot.command_steer)/bot.L;
+	bot.pose.x = bot.pose.x + bot.command.v*T*cos(bot.pose.theta);
+	bot.pose.y = bot.pose.y + bot.command.v*T*sin(bot.pose.theta);
+	bot.pose.theta = bot.pose.theta + bot.command.v*T*tan(bot.command.steer)/bot.L;
     
     return bot;
 // Need to add noise
@@ -43,7 +43,7 @@ float Algorithm::motion_model(Bot &bot){
 float Algorithm::sensor_model(Bot &bot){
 	float Xc,Xi,Xe,Xl;
 	Xc = this-> camera_model(&bot);
-	Xi =this-> imu_model(&bot);
+	Xi = this-> imu_model(&bot);
 	Xe = this-> encoder_model(&bot);
 	Xl = this-> lidar_model(&bot);
 
@@ -72,8 +72,6 @@ float Algorithm::imu_model(Bot &bot){
 
 float Algorithm::lidar_model(Bot &bot){
    
-
-
 
 }
 
