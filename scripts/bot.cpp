@@ -1,6 +1,15 @@
-//#include "ros/ros.h"
 #include <iostream>
 #include <vector>
+#include "ros/ros.h"
+// #include "slam/"
+#include <cstdlib>
+#include "std_msgs/String.h"
+#include "geometry_msgs/Vector3.h"
+#include "geometry_msgs/Quaternion.h"
+#include "geometry_msgs/Point.h"
+#include "sensor_msgs/LaserScan"
+#include "sensor_msgs/Image"
+#include "sensor_msgs/Imu"
 //#include 
 
 class pose{
@@ -8,9 +17,6 @@ class pose{
 		float x;
 		float y;
 		float theta;
-
-
-
 };
 
 
@@ -21,19 +27,23 @@ class command{
 };
 
 
-
-
 class Bot{
 	private:
 		float L;
 	public:
 		vector<float> g_map;
 	    pose pos;
+	    pos.x = 0;
+	    pos.y = 0;
+	    pos.theta = 0;
+
 		command cmd;
-	    float encoder[4];
-	    vector<vector <float>> lidar_data;                     
-	    vector<vector <float>> camera_frame;                 
-	    float imu[3];                   //ax, ay, wz
+		cmd.v = 0;
+		cmd.u = 0;
+
+	    LaserScan lidar_data;
+	    Image camera_frame
+	    Imu imu;
 
 	
 	void sense(){
@@ -41,19 +51,56 @@ class Bot{
 		// We can add a new variable to check if the sensor has updated or not 
 		// based on that we can extend to multiple sampling frequenct filter.
 
+        int argc = 1;
+        char **argv=2;                  // need to figure out why
+		
+		ros::init(argc, argv, "client");
+    	ros::NodeHandle bot;
+    	ros::ServiceClient botsenseclient = bot.serviceClient<slam::FetchSensor>("fetch_sensor");
 
+    	//slam::FetchSensor srv;
 
-		// pos = ;
-		// cmd = ;
-		// encoder = ;
-		// lidar_data =;
-		// camera_frame =;
+    	slam::FetchSensor::Request requs;
+    	slam::FetchSensor::Response resps;
 
+    	bool success_sense = botsenseclient.call(requs,resps);
 
+    	if (success_sense){
+//			encoder      = ;                    // will do this later
+			lidar_data   = resps.laser;
+			camera_frame = resps.img;
+			imu 		 = resps.inertia;
+    	}
+
+    	else{
+    		ROS_ERROR("Failed to call service add_two_ints");
+    	}
+
+		
+		//ros::init(argc, argv, "bot_cmd_client");
+    	//ros::NodeHandle command;
+    	ros::ServiceClient botcommandclient = bot.serviceClient<slam::FetchCommand>("fetch_command");
+
+    	slam::FetchCommand::Request requc;
+    	slam::FetchCommand::Response respc;
+
+    	bool success_command = botcommandclient.call(requc,respc);
+
+    	if (success_command){
+    		cmd.u          = respc.u;
+			cmd.v          = respc.v;
+    	}
+
+    	else{
+   
+    	}
 	}
-
-
 };
+
+
+
+
+
 
 
 
