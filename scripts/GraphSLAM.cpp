@@ -4,9 +4,6 @@ class node{
     public:
         vector<float> pose;
         vector<float> laser_measure;
-
-
-
 }
 
 
@@ -19,8 +16,6 @@ class edge{
         Matrix I;       // Information filter
         vector<float> z_hat; // observation coming from model
 
-
-
 }
 
 
@@ -29,7 +24,7 @@ class GraphSLAM:private Algorithm{
         map<int,int> graph;
         vector<node> nodes;
         vector<edge> Edges;
-     //   vector<vector>> edges;
+   //   vector<vector>> edges;
 
     public:
         float optimization(graph)
