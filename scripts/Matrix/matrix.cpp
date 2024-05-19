@@ -21,6 +21,32 @@ class matrix{
 			return numcol;
 		}
 
+		vector<vector<float>> init_mat(const float* array) {
+    		vector<vector<float>> result;
+			size_t rows = sizeof(myArray) / sizeof(myArray[0]);
+    		size_t cols = sizeof(myArray[0]) / sizeof(myArray[0][0]);
+			// Iterate over rows
+			for (size_t i = 0; i < rows; ++i) {
+				// Create a new row vector
+				vector<float> row;
+				// Copy elements from the array for this row
+				for (size_t j = 0; j < cols; ++j) {
+					row.push_back(array[i * cols + j]);
+				}
+				// Add this row to the result
+				result.push_back(row);
+			}
+			mat = result;
+			return result;
+		}
+
+		vector<vector<float>> init_mat(const vector<vector<float>>& input) {
+			mat = input;
+			return input;
+		}
+
+
+
 		matrix operator+(matrix &M){
 			matrix res;
 

@@ -17,13 +17,16 @@ class pose{
 		float x;
 		float y;
 		float theta;
+		float vx;
+		float vy;
+		float w;
 };
 
 
 class command{
 	public:
-		float u;
 		float v;
+		float steer;
 };
 
 
@@ -33,16 +36,20 @@ class Bot{
 	public:
 		vector<float> g_map;
 	    pose pos;
+		pose prev_pos;
 	    pos.x = 0;
 	    pos.y = 0;
 	    pos.theta = 0;
+		pos.vx = 0;
+		pos.vy = 0;
+		pos.w = 0;
 
 		command cmd;
 		cmd.v = 0;
 		cmd.u = 0;
 
 	    LaserScan lidar_data;
-	    Image camera_frame
+	    Image camera_frame;
 	    Imu imu;
 
 	
@@ -94,6 +101,30 @@ class Bot{
     	else{
    
     	}
+	}
+
+
+	float Initialize(vector<float> vec){
+		pos.x = vec[0];
+	    pos.y = vec[1];
+	    pos.theta = vec[2];
+		pos.vx = vec[3];
+		pos.vy = vec[4];
+		pos.w = vec[5];
+		
+		return 0;
+	}
+
+	vector<float> ss(){
+		vector<float> ss_vec;
+		ss_vec.push_back(pos.x);
+		ss_vec.push_back(pos.y);
+		ss_vec.push_back(pos.theta);
+		ss_vec.push_back(pos.vx);
+		ss_vec.push_back(pos.vy);
+		ss_vec.push_back(pos.w);
+
+		return ss_vec;
 	}
 };
 

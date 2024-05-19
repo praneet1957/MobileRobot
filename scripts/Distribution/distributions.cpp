@@ -2,25 +2,26 @@
 #include <bits/stdc++.h>
 #include <iostream>
 #include <vector>
+#include <math>
+#include <matrix>
 
 
 class distribution{
     Private:
+        matrix mean;
+        matrix variance;
+
 
 
 
 
 
     Public:
-        float sample(){
+        float sample(float x){
+            p_x = 1/sqrt((2*3.1415)^(variance.numrows())*variance.determinant())*exp(-(x-mean).transpose()*(variance.inv()*(x-mean)))
             
         }
     
-
-
-
-
-
 
 }
 
