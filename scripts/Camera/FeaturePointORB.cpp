@@ -49,47 +49,82 @@ vector<float> corner_orientation(float Image, float corners, float bounding_box)
 
 
 
-vector<float> NonMaximalSuppression(vector<vector<float>> keypoints, vector<float> scores){
+vector<float> NonMaximalSuppression(vector<vector<float>> keypoints, vector<float> scores, int Rows, int Cols){
     int NumKeyPoints = size(keypoints);
     int MaxSuppress = 3;
 
-    vector<vector<float>> Newkeypoints = keypoints;
+    vector<vector<float>> Newkeypoints;
+    int SupRow = Rows/MaxSuppress + 1;
+    int SupCol = Cols/MaxSuppress + 1;
 
-    for(int j=0;j<NumKeyPoints;j++){
-        for(int p=j;p<NumKeyPoints;p++){
-            float dist = abs(keypoints[j][0] - keypoints[p][0]) + abs(keypoints[j][1] - keypoints[p][1]);
-            if (dist < MaxSuppress){
-                if (score[j] < score[p]){
-                    int elementToRemove = j; 
+    //float SparseKeypoints[Rows/MaxSuppress][Cols/MaxSuppress] ={0} ;
+    float SparseKeys[SupRow*SupCol]  = {-1};
+    vector<int> ValuesAt;
 
-                    // Remove the element using erase function and iterators 
-                    auto it = find(Newkeypoints.begin(), Newkeypoints.end(), 
-                                        elementToRemove); 
-                
-                    // If element is found found, erase it 
-                    if (it != Newkeypoints.end()) { 
-                        Newkeypoints.erase(it); 
-                    } 
-                }
-                else
-                {
-                    int elementToRemove = j; 
-                    // Remove the element using erase function and iterators 
-                    auto it = find(Newkeypoints.begin(), Newkeypoints.end(), 
-                                        elementToRemove); 
-                
-                    // If element is found found, erase it 
-                    if (it != Newkeypoints.end()) { 
-                        Newkeypoints.erase(it); 
-                    }
-                }
-            }
+    for(int k=0;k<NumKeyPoints;k++){
+        int x = keypoints[k][0]/MaxSuppress;
+        int y = keypoints[k][1]/MaxSuppress;
 
-            else{
-                Newkeypoints.push_back(keypoints[j])
-            }
+        int key = x + SupCol*y;
+
+        if (SparseKeys[key] == -1){
+            SparseKeys[key] = k;
+            ValuesAt.push_back(key);
         }
+        else{
+            if(scores[k]>scores[SparseKeys[key]]){
+                SparseKeys[key] = k;
+            }
+            else{
+                // do nothing
+            }
+        }  
     }
+
+    int NumFound = ValuesAt.size();
+
+    for(i=0;i<NumFound;i++){
+        Newkeypoints.push_back(keypoints[ValuesAt[i]]);
+    }
+
+
+
+    // for(int j=0;j<NumKeyPoints;j++){
+    //     for(int p=j;p<NumKeyPoints;p++){
+    //         float dist = abs(keypoints[j][0] - keypoints[p][0]) + abs(keypoints[j][1] - keypoints[p][1]);
+    //         if (dist < MaxSuppress){
+    //             if (score[j] < score[p]){
+    //                 int elementToRemove = j; 
+
+    //                 // Remove the element using erase function and iterators 
+    //                 auto it = find(Newkeypoints.begin(), Newkeypoints.end(), 
+    //                                     elementToRemove); 
+                
+    //                 // If element is found found, erase it 
+    //                 if (it != Newkeypoints.end()) { 
+    //                     Newkeypoints.erase(it); 
+    //                 } 
+    //             }
+    //             else
+    //             {
+    //                 int elementToRemove = j; 
+    //                 // Remove the element using erase function and iterators 
+    //                 auto it = find(Newkeypoints.begin(), Newkeypoints.end(), 
+    //                                     elementToRemove); 
+                
+    //                 // If element is found found, erase it 
+    //                 if (it != Newkeypoints.end()) { 
+    //                     Newkeypoints.erase(it); 
+    //                 }
+    //             }
+    //         }
+
+    //         else{
+    //             Newkeypoints.push_back(keypoints[j])
+    //         }
+    //     }
+    // }
+
 
     return Newkeypoints;
 
@@ -190,7 +225,7 @@ vector<float> oFAST(float Image, float N){
     // The corners are given orientation by corner_orientation function
     // Non Maximal suppresion
 
-    vector<vector<float>> Modkeypoints = NonMaximalSuppression(keypoints, scores);
+    vector<vector<float>> Modkeypoints = NonMaximalSuppression(keypoints, scores, Rows, Cols);
 
 
     return Modkeypoints;
