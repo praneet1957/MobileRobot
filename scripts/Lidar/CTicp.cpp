@@ -4,6 +4,7 @@
 #include <matrix>
 #include <cstdlib> 
 #include <matrix>
+#include <graph>
 
 
 using namespace std;
@@ -26,18 +27,40 @@ vector<int[2]> Association(float modPointCloud1, float modPointCloud2, float Rot
 
     //Calculate normals at every point in cloud 2
     int numPoints2 = size(modPointCloud2);
-    float newPointCloud2 = transform(modPointCloud2,Rot);
+    float newPointCloud2 = transform(modPointCloud2,Rot, trans);
 
+    // KD tree algorithm for modPointCloud1
+    int numPoints1 = size(modPointCloud1);
 
-    for (int j=0;j<numPoints2;j++){
-        
+    //initialize starting node
+    struct Node *root = NULL;
+    float rootPoint[2] = modPointCloud1[numPoints1/2];
+    root = insertNode(root, rootPoint);
+
+    //generate KD tree
+    for(int i=0;i<numPoints1;i++){
+        if(i!=numPoints1/2){
+            float point[2] = modPointCloud1[i];
+            root = insertNode(root, point);
+            }
+        else{
+        }
     }
 
+    
+    for (int j=0;j<numPoints2;j++){
+        // find a corresponding point in cloud 1
+        float point[2] = newPointCloud2[j];
+        int depth = 0;
+
+        //search KD tree
+        if 
+
+        
 
 
-
-
-
+        
+    }
 
 
     // returns association between 2 point clouds
@@ -46,12 +69,14 @@ vector<int[2]> Association(float modPointCloud1, float modPointCloud2, float Rot
 
 matrix computeTransformation(vector<int[2]> associate, float &samplPointCloud1, float &samplPointCloud2){
     // Compute transform between 2 clouds using SVD or gradient based 
-   
+    
 
 
     // returns translation and rotation matrix
     
 }
+
+
 
 
 float errorICP(){
