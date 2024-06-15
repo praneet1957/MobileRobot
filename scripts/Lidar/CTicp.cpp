@@ -41,29 +41,67 @@ vector<int[2]> Association(float modPointCloud1, float modPointCloud2, float Rot
     for(int i=0;i<numPoints1;i++){
         if(i!=numPoints1/2){
             float point[2] = modPointCloud1[i];
-            root = insertNode(root, point);
+            root = insertNode(root, point, i);
             }
         else{
         }
     }
 
-    
+    int pairs[numPoints2][2];
     for (int j=0;j<numPoints2;j++){
         // find a corresponding point in cloud 1
         float point[2] = newPointCloud2[j];
         int depth = 0;
 
         //search KD tree
-        if 
+        float res[] = searchKD(root, depth, point);
 
-        
-
-
-        
+        //pairs of cloud1, cloud2
+        pairs[j] = {res[0], j}  ; 
     }
 
-
+    return pairs;
     // returns association between 2 point clouds
+}
+
+
+float searchKD(root, depth, point, minDis=100000){
+    int cd = depth % 2;
+
+    if (root-> left == NULL and root->right== NULL){
+
+        float minDisNew=0;
+
+        //calculate distance
+        for(int i=0; i<k, i++){
+        minDisNew += (root->point[i] - point[i])*(root->point[i] - point[i]) ;
+        }
+
+        float result[] = {root->index, minDisNew, depth};
+        return result;
+    }
+
+    if (point[cd] < root->point[cd]){
+        float resultLeft[] = searchKD(root-> left, depth + 1, point);
+
+        if resultLeft[1] > abs(point[cd] - root->point[cd]){
+            return searchKD(root-> right, depth + 1, point);
+        }
+        
+        return resultLeft;
+    }
+
+    else{
+        float resultRight[] searchKD(root-> right, depth + 1, point);
+
+        if resultRight[1] > abs(point[cd] - root->point[cd]){
+            return searchKD(root-> left, depth + 1, point);
+        }
+
+        return resultRight;
+    }
+
+    return 0;
 }
 
 
@@ -111,10 +149,7 @@ float errorICP(){
 float ICP(float PointCloud1, float PointCloud2, float Rot, float trans){
     // Subsampling if necessary
 
-
-
     // Take intersection of clouds for Association
-
 
     // Go in loop till convergence
     float error = 1000000;
