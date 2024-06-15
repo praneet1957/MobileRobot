@@ -11,22 +11,23 @@ const int k = 2;
 struct Node
 {
     float point[k];
+    int index;
     Node *left, *right;
 }
 
-struct Node* newNode(int arr[]){
+struct Node* newNode(int arr[], int index=0){
     struct Node* temp = new Node;
     for(int j=0; j<k; j++){
         temp->point[i] = arr[i];
     }
-
+    temp->index = index;
     temp->left = NULL;
     temp->right = NULL;
 
     return temp;
 }
 
-Node *insertRecursive(Node *root, float point[], int depth){
+Node *insertRecursive(Node *root, float point[], int depth, int index){
     if (root == NULL){
         return newNode(point);
     }
@@ -44,8 +45,8 @@ Node *insertRecursive(Node *root, float point[], int depth){
 }
 
 
-Node *insertNode(Node *root, float point[]){
-    return insert(root, point ,0);
+Node *insertNode(Node *root, float point[], int index=0){
+    return insert(root, point ,0, index);
 }
 
 bool searchRecursive(Node *root, int point[], int depth){
