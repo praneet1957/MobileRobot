@@ -5,6 +5,7 @@
 #include <cstdlib> 
 #include <matrix>
 #include <graph>
+#include <math>
 
 
 using namespace std;
@@ -105,10 +106,63 @@ float searchKD(root, depth, point, minDis=100000){
 }
 
 
+matrix Rot(theta){
+    matrix rotMatrix;
+    rotMatrix.mat = {{cos(theta), -sin(theta)},{sin(theta), cos(theta)}};
+    return rotMatrix;
+}
+
+
 matrix computeTransformation(vector<int[2]> associate, float &samplPointCloud1, float &samplPointCloud2){
     // Compute transform between 2 clouds using SVD or gradient based 
-    
+    int numPoint = size(samplePointCloud1);
+    float err ;
 
+    // will use gradient 
+    matrix jacob;
+    matrix errVec;
+    matrix parameter;
+
+    //initialize parameter
+
+
+    float theta=0;
+    float threshold = 10;  
+
+    while(err<threshold){
+        //jacobian calculation
+        jacob.mat = {{1, 0, - sin(theta) - cos(theta)},{0 ,1 ,cos(theta)- sin(theta) }};
+
+        matrix updateMatLeft;
+        matrix updateMatRight;
+
+
+        for(int i=0; i<numPoint; i++){
+            updateMatLeft += jacob.transpose()*jacob;
+            updateMatRight += jacob.transpose()*err ;
+        }
+
+        //calculating increment 
+        matrix delta;
+        delta = -updateMatLeft.inv()*updateMatRight;
+
+        //update parameter
+        parameter += delta;
+
+        // compute error
+        for(int i=0; i<numPoint; i++){
+            matrix point, transVec, targetPoint;
+            point.mat = {{samplePointCloud2[i][0]},{samplePointCloud2[i][1]}};
+            transVec.mat = {{parameter.mat[0]},{parameter.mat[1]}};
+            targetPoint.mat = {{samplePointCloud1[associate[i]][0]},{samplePointCloud1[associate[i]][1]}};
+            errVec = Rot(theta)*point + transVec - targetPoint;
+            err += (errVec.transpose()*errVec).mat[0];
+        }
+
+        theta = parameter.mat[2];
+    }
+
+    return parameter;
 
     // returns translation and rotation matrix
     
@@ -153,29 +207,35 @@ float ICP(float PointCloud1, float PointCloud2, float Rot, float trans){
 
     // Go in loop till convergence
     float error = 1000000;
+    matrix transform;
     matrix globalTransform;
     
 
     while(error < threshold){
 
-    // Get the association between clouds
-    vector<int[2]> associate;
-    matrix transform;
+        // Get the association between clouds
+        vector<int[2]> associate;
+        matrix transform;
 
-    associate = Association(samplPointCloud1, samplPointCloud2);
+        associate = Association(samplPointCloud1, samplPointCloud2);
 
-    // Get the Rotation and translation
-    transform.mat = Transformation(associate, &samplPointCloud1, &samplPointCloud2, &error);
+        // Get the Rotation and translation
+        transform = computeTransformation(associate, &samplPointCloud1, &samplPointCloud2, &error);
 
-    // save the rotation and translation
-    globalTransform.mat = globalTransform.mat*transform.mat;
+        // save the rotation and translation
+        globalTransform += transform;
 
     }
 
     // Compute final rotation and translation
-    
+    matrix RotMat;
+    RotMat = Rot(globalTransform.mat[2]);
+    samplPointCloud2 = transform(samplPointCloud2,RotMat,{globalTransform.mat[0],globalTransform.mat[1]} );
+
+
 
     // Update map ?
+    
 
 
 
