@@ -121,51 +121,39 @@ matrix computeTransformation(vector<int[2]> associate, float &samplPointCloud1, 
     // will use gradient 
     matrix jacob;
     matrix errVec;
-    matrix parameter;
 
     //initialize parameter
-
-
     float theta=0;
-    float threshold = 10;  
+    
+    //jacobian calculation
+    jacob.mat = {{1, 0, - sin(theta) - cos(theta)},{0 ,1 ,cos(theta)- sin(theta) }};
 
-    while(err<threshold){
-        //jacobian calculation
-        jacob.mat = {{1, 0, - sin(theta) - cos(theta)},{0 ,1 ,cos(theta)- sin(theta) }};
-
-        matrix updateMatLeft;
-        matrix updateMatRight;
+    matrix updateMatLeft;
+    matrix updateMatRight;
 
 
-        for(int i=0; i<numPoint; i++){
-            updateMatLeft += jacob.transpose()*jacob;
-            updateMatRight += jacob.transpose()*err ;
-        }
-
-        //calculating increment 
-        matrix delta;
-        delta = -updateMatLeft.inv()*updateMatRight;
-
-        //update parameter
-        parameter += delta;
-
-        // compute error
-        for(int i=0; i<numPoint; i++){
-            matrix point, transVec, targetPoint;
-            point.mat = {{samplePointCloud2[i][0]},{samplePointCloud2[i][1]}};
-            transVec.mat = {{parameter.mat[0]},{parameter.mat[1]}};
-            targetPoint.mat = {{samplePointCloud1[associate[i]][0]},{samplePointCloud1[associate[i]][1]}};
-            errVec = Rot(theta)*point + transVec - targetPoint;
-            err += (errVec.transpose()*errVec).mat[0];
-        }
-
-        theta = parameter.mat[2];
+    for(int i=0; i<numPoint; i++){
+        updateMatLeft += jacob.transpose()*jacob;
+        updateMatRight += jacob.transpose()*err ;
     }
 
-    return parameter;
+    //calculating increment 
+    matrix delta;
+    delta = -updateMatLeft.inv()*updateMatRight;
 
-    // returns translation and rotation matrix
-    
+    // compute error
+    for(int i=0; i<numPoint; i++){
+        matrix point, transVec, targetPoint;
+        theta = delta.mat[2][0];
+        point.mat = {{samplePointCloud2[i][0]},{samplePointCloud2[i][1]}};
+        transVec.mat = {{delta.mat[0][0]},{delta.mat[1][0]}};
+        targetPoint.mat = {{samplePointCloud1[associate[i]][0]},{samplePointCloud1[associate[i]][1]}};
+        errVec = Rot(theta)*point + transVec - targetPoint;
+        err = (errVec.transpose()*errVec).mat[0];
+    }
+
+    // returns translation and rotation parameters
+    return delta;
 }
 
 
@@ -195,8 +183,7 @@ float errorICP(){
         float norm[2] = {-(1-prop)*segment1[1],(1-prop)*segment1[0], -(prop)*segment2[1],(prop)*segment2[0]};
 
         normals.push_back(norm);
-    }
-
+    }  
 }
 
 
@@ -205,10 +192,18 @@ float ICP(float PointCloud1, float PointCloud2, float Rot, float trans){
 
     // Take intersection of clouds for Association
 
+
     // Go in loop till convergence
     float error = 1000000;
+    float threshold = 10;
+
     matrix transform;
     matrix globalTransform;
+    matrix parameter;
+
+    //Initialize parameter
+    globalTransform.mat = {0,0,0};
+
     
 
     while(error < threshold){
@@ -219,7 +214,7 @@ float ICP(float PointCloud1, float PointCloud2, float Rot, float trans){
 
         associate = Association(samplPointCloud1, samplPointCloud2);
 
-        // Get the Rotation and translation
+        // Get the Rotation and translation 
         transform = computeTransformation(associate, &samplPointCloud1, &samplPointCloud2, &error);
 
         // save the rotation and translation
@@ -229,14 +224,13 @@ float ICP(float PointCloud1, float PointCloud2, float Rot, float trans){
 
     // Compute final rotation and translation
     matrix RotMat;
-    RotMat = Rot(globalTransform.mat[2]);
-    samplPointCloud2 = transform(samplPointCloud2,RotMat,{globalTransform.mat[0],globalTransform.mat[1]} );
+    RotMat = Rot(globalTransform.mat[2][0]);
+    samplPointCloud2 = transform(samplPointCloud2,RotMat,{globalTransform.mat[0][0],globalTransform.mat[1][0]});
+
 
 
 
     // Update map ?
-    
-
 
 
 }
